@@ -1,0 +1,311 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+
+const services = [
+  { name: 'Murals', desc: 'Interior or exterior walls, any scale. Residential, retail or civic.' },
+  { name: 'Live Painting', desc: 'Events, festivals and brand activations painted in real time.' },
+  { name: 'Brand Collabs', desc: 'Custom capsules, packaging art and limited co-branded drops.' },
+  { name: 'Custom Pieces', desc: 'Canvases, decks and one-off commissions for collectors.' },
+];
+const budgets = ['Under $1k', '$1k–$5k', '$5k–$10k', '$10k+'];
+const projectTypes = ['Mural', 'Live Painting', 'Brand Collab', 'Custom Piece', 'Not sure yet'];
+---
+
+<BaseLayout title="Commissions" description="Commission a mural, live painting, or custom piece from a Jacksonville street artist.">
+  <section class="cm-hero">
+    <div class="container container--wide">
+      <p class="eyebrow">Continue? · Insert Coin</p>
+      <h1 class="display cm-hero__title">Commissions</h1>
+      <p class="lede">
+        Got a wall, an event, or a brand that needs real spray? Tell me about the
+        project and I'll get back within two business days. Based in {site.city},
+        available for travel.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container container--wide cm-grid">
+      <!-- Services -->
+      <aside class="cm-services">
+        <h2 class="hud cm-services__h">What I Do</h2>
+        <ul role="list" class="cm-services__list">
+          {services.map((s) => (
+            <li class="cm-service panel">
+              <h3 class="cm-service__name display">{s.name}</h3>
+              <p>{s.desc}</p>
+            </li>
+          ))}
+        </ul>
+      </aside>
+
+      <!-- Form -->
+      <div class="cm-form-wrap panel panel--hard">
+        <form class="cm-form" data-cm-form novalidate>
+          <h2 class="display cm-form__title">Start the Brief</h2>
+
+          <div class="field">
+            <label for="name" class="hud">Name <span class="req">*</span></label>
+            <input id="name" name="name" type="text" autocomplete="name" required />
+            <p class="err" data-err-for="name" role="alert" hidden></p>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="email" class="hud">Email <span class="req">*</span></label>
+              <input id="email" name="email" type="email" autocomplete="email" required inputmode="email" />
+              <p class="err" data-err-for="email" role="alert" hidden></p>
+            </div>
+            <div class="field">
+              <label for="phone" class="hud">Phone</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="type" class="hud">Project Type <span class="req">*</span></label>
+              <select id="type" name="type" required>
+                <option value="">Select…</option>
+                {projectTypes.map((t) => <option value={t}>{t}</option>)}
+              </select>
+              <p class="err" data-err-for="type" role="alert" hidden></p>
+            </div>
+            <div class="field">
+              <label for="budget" class="hud">Budget</label>
+              <select id="budget" name="budget">
+                <option value="">Select…</option>
+                {budgets.map((b) => <option value={b}>{b}</option>)}
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="location" class="hud">Location</label>
+            <input id="location" name="location" type="text" placeholder="City / neighborhood" autocomplete="address-level2" />
+            <p class="help">Helps me gauge travel and permits.</p>
+          </div>
+
+          <div class="field">
+            <label for="details" class="hud">Project Details <span class="req">*</span></label>
+            <textarea id="details" name="details" rows="5" required placeholder="Wall size, surface, timeline, vibe, references…"></textarea>
+            <p class="err" data-err-for="details" role="alert" hidden></p>
+          </div>
+
+          <button type="submit" class="btn btn--lg cm-form__submit">Send the Brief →</button>
+          <p class="cm-form__note hud">◈ Or email direct: <a href={`mailto:${site.email}`}>{site.email}</a></p>
+
+          <!-- Integration note for the developer:
+               Wire this form to a handler before launch — e.g. Formspree, Netlify
+               Forms, or a serverless function that emails the artist. Right now it
+               validates and confirms client-side only (no data leaves the browser). -->
+        </form>
+
+        <div class="cm-success" data-cm-success hidden role="status" aria-live="polite">
+          <p class="cm-success__badge hud">◆ Brief Sent ◆</p>
+          <h2 class="display">You're in the queue.</h2>
+          <p class="lede">Thanks — I'll hit you back within two business days. Check your inbox for a confirmation.</p>
+          <a href="/gallery" class="btn btn--cyan">Browse the Gallery →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .cm-hero {
+    padding-block: clamp(2rem, 1.5rem + 4vw, 4rem) var(--sp-6);
+  }
+  .cm-hero__title {
+    font-size: var(--fs-3xl);
+    margin: var(--sp-3) 0 var(--sp-4);
+  }
+  .cm-grid {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: var(--sp-8);
+    align-items: start;
+  }
+  .cm-services__h {
+    color: var(--accent-2);
+    margin-bottom: var(--sp-4);
+  }
+  .cm-services__list {
+    display: grid;
+    gap: var(--sp-4);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .cm-service {
+    padding: var(--sp-4);
+  }
+  .cm-service__name {
+    font-size: 1.4rem;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+  .cm-service p {
+    color: var(--fog);
+    font-size: 0.92rem;
+  }
+  .cm-form-wrap {
+    padding: clamp(1.25rem, 1rem + 2vw, 2.5rem);
+    background: var(--concrete);
+  }
+  .cm-form {
+    display: grid;
+    gap: var(--sp-5);
+  }
+  .cm-form__title {
+    font-size: var(--fs-xl);
+  }
+  .field {
+    display: grid;
+    gap: 0.45rem;
+  }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-4);
+  }
+  label .req {
+    color: var(--magenta);
+  }
+  .field label {
+    color: var(--accent-2);
+  }
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.7rem 0.85rem;
+    color: var(--chalk);
+    background: var(--ink);
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-1);
+    font: inherit;
+  }
+  textarea {
+    resize: vertical;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--fog-dim);
+  }
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--accent-2);
+  }
+  .field.has-error input,
+  .field.has-error select,
+  .field.has-error textarea {
+    border-color: var(--magenta);
+  }
+  .help {
+    color: var(--fog-dim);
+    font-size: 0.8rem;
+  }
+  .err {
+    color: var(--magenta);
+    font-size: 0.82rem;
+    font-weight: 500;
+  }
+  .cm-form__submit {
+    width: 100%;
+  }
+  .cm-form__note {
+    color: var(--fog-dim);
+    text-align: center;
+  }
+  .cm-form__note a {
+    color: var(--accent-2);
+  }
+  .cm-success {
+    display: grid;
+    gap: var(--sp-4);
+    place-items: start;
+    padding: var(--sp-4);
+  }
+  .cm-success__badge {
+    color: var(--acid);
+  }
+  .cm-success h2 {
+    font-size: var(--fs-xl);
+  }
+  @media (max-width: 860px) {
+    .cm-grid {
+      grid-template-columns: 1fr;
+    }
+    .field-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-cm-form]');
+  const success = document.querySelector<HTMLElement>('[data-cm-success]');
+
+  function showError(name: string, msg: string) {
+    const field = form?.querySelector(`[name="${name}"]`)?.closest('.field');
+    const err = form?.querySelector<HTMLElement>(`[data-err-for="${name}"]`);
+    field?.classList.add('has-error');
+    if (err) {
+      err.textContent = msg;
+      err.hidden = false;
+    }
+  }
+  function clearError(name: string) {
+    const field = form?.querySelector(`[name="${name}"]`)?.closest('.field');
+    const err = form?.querySelector<HTMLElement>(`[data-err-for="${name}"]`);
+    field?.classList.remove('has-error');
+    if (err) err.hidden = true;
+  }
+
+  // Clear errors on input
+  form?.querySelectorAll<HTMLElement>('[name]').forEach((el) =>
+    el.addEventListener('input', () => clearError(el.getAttribute('name')!))
+  );
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = new FormData(form);
+    let firstBad: string | null = null;
+
+    const required: Array<[string, string]> = [
+      ['name', 'Tell me your name.'],
+      ['email', 'A valid email is required.'],
+      ['type', 'Pick a project type.'],
+      ['details', 'Give me a few details to work with.'],
+    ];
+
+    for (const [name, msg] of required) {
+      const val = String(data.get(name) ?? '').trim();
+      const isEmail = name === 'email';
+      const bad = !val || (isEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val));
+      if (bad) {
+        showError(name, msg);
+        firstBad = firstBad ?? name;
+      } else {
+        clearError(name);
+      }
+    }
+
+    if (firstBad) {
+      form.querySelector<HTMLElement>(`[name="${firstBad}"]`)?.focus();
+      return;
+    }
+
+    // Success (client-side only — wire to a real handler before launch)
+    form.hidden = true;
+    if (success) {
+      success.hidden = false;
+      success.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+  });
+</script>

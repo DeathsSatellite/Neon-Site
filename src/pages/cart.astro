@@ -1,0 +1,259 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Cart" description="Your cart.">
+  <div class="container container--wide cart-page">
+    <h1 class="display cart-page__title">Your Cart</h1>
+
+    <div class="cart-layout" data-cart-layout>
+      <div class="cart-lines" data-cart-lines>
+        <!-- rendered by script -->
+      </div>
+
+      <aside class="cart-summary panel panel--hard" data-cart-summary>
+        <h2 class="hud cart-summary__h">Order Summary</h2>
+        <div class="cart-summary__row">
+          <span>Subtotal</span>
+          <span class="display" data-subtotal>$0.00</span>
+        </div>
+        <div class="cart-summary__row cart-summary__row--muted">
+          <span>Shipping</span>
+          <span>Calculated at checkout</span>
+        </div>
+        <div class="cart-summary__row cart-summary__total">
+          <span class="hud">Total</span>
+          <span class="display" data-total>$0.00</span>
+        </div>
+        <a href="/checkout" class="btn btn--lg cart-summary__go">Checkout →</a>
+        <a href="/shop" class="cart-summary__continue hud">← Keep shopping</a>
+      </aside>
+    </div>
+
+    <div class="cart-empty" data-cart-empty hidden>
+      <p class="hud blink">◆ Your cart is empty ◆</p>
+      <h2 class="display">Nothing here yet.</h2>
+      <p class="lede">Go grab something before the drop sells out.</p>
+      <a href="/shop" class="btn btn--cyan btn--lg">Enter the Shop →</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .cart-page {
+    padding-block: clamp(2rem, 1.5rem + 4vw, 4rem);
+    min-height: 60vh;
+  }
+  .cart-page__title {
+    font-size: var(--fs-3xl);
+    margin-bottom: var(--sp-6);
+  }
+  .cart-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: var(--sp-6);
+    align-items: start;
+  }
+  .cart-lines {
+    display: grid;
+    gap: var(--sp-4);
+  }
+  :global(.cartrow) {
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    gap: var(--sp-4);
+    padding: var(--sp-4);
+    background: var(--concrete);
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-2);
+    align-items: center;
+  }
+  :global(.cartrow__art) {
+    width: 90px;
+    aspect-ratio: 4 / 5;
+    border: 2px solid var(--ink);
+    overflow: hidden;
+  }
+  :global(.cartrow__art svg) {
+    width: 100%;
+    height: 100%;
+  }
+  :global(.cartrow__name) {
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+  :global(.cartrow__meta) {
+    color: var(--fog-dim);
+    font-size: 0.85rem;
+    margin-top: 0.2rem;
+  }
+  :global(.cartrow__controls) {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    margin-top: var(--sp-3);
+    flex-wrap: wrap;
+  }
+  :global(.cartrow__stepper) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-1);
+    padding: 0.2rem;
+  }
+  :global(.cartrow__stepper button) {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    color: var(--chalk);
+    font-size: 1.1rem;
+  }
+  :global(.cartrow__stepper button:hover) {
+    color: var(--accent-2);
+  }
+  :global(.cartrow__stepper span) {
+    min-width: 2ch;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+  :global(.cartrow__remove) {
+    font-family: var(--font-arcade);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    color: var(--fog-dim);
+  }
+  :global(.cartrow__remove:hover) {
+    color: var(--magenta);
+  }
+  :global(.cartrow__price) {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    align-self: start;
+  }
+  .cart-summary {
+    display: grid;
+    gap: var(--sp-3);
+    padding: var(--sp-5);
+    position: sticky;
+    top: calc(var(--header-h) + 1rem);
+  }
+  .cart-summary__h {
+    color: var(--accent-2);
+  }
+  .cart-summary__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    color: var(--fog);
+  }
+  .cart-summary__row--muted {
+    color: var(--fog-dim);
+    font-size: 0.88rem;
+  }
+  .cart-summary__total {
+    padding-top: var(--sp-3);
+    border-top: 2px solid var(--line-strong);
+    color: var(--chalk);
+  }
+  .cart-summary__total .display {
+    font-size: 1.8rem;
+    color: var(--accent-3);
+  }
+  .cart-summary__go {
+    width: 100%;
+    margin-top: var(--sp-2);
+  }
+  .cart-summary__continue {
+    text-align: center;
+    color: var(--fog-dim);
+  }
+  .cart-summary__continue:hover {
+    color: var(--accent-2);
+  }
+  .cart-empty {
+    display: grid;
+    gap: var(--sp-4);
+    place-items: center;
+    text-align: center;
+    padding: var(--sp-12) var(--sp-4);
+  }
+  .cart-empty h2 {
+    font-size: var(--fs-2xl);
+  }
+  @media (max-width: 820px) {
+    .cart-layout {
+      grid-template-columns: 1fr;
+    }
+    .cart-summary {
+      position: static;
+    }
+  }
+</style>
+
+<script>
+  import { cart, setQty, removeLine, cartSubtotal, formatMoney } from '../scripts/cart';
+
+  const layout = document.querySelector<HTMLElement>('[data-cart-layout]');
+  const empty = document.querySelector<HTMLElement>('[data-cart-empty]');
+  const linesEl = document.querySelector<HTMLElement>('[data-cart-lines]');
+  const subEl = document.querySelector<HTMLElement>('[data-subtotal]');
+  const totalEl = document.querySelector<HTMLElement>('[data-total]');
+
+  const hues = ['#ff2e63', '#00e5ff', '#ffe600', '#7cff5b', '#8a4bff'];
+  function swatch(seed: number): string {
+    const a = hues[((seed % hues.length) + hues.length) % hues.length];
+    const b = hues[(seed + 2) % hues.length];
+    return `<svg viewBox="0 0 90 112" aria-hidden="true"><rect width="90" height="112" fill="#141018"/><circle cx="30" cy="40" r="34" fill="${a}" opacity="0.55"/><circle cx="66" cy="82" r="26" fill="${b}" opacity="0.5"/><rect x="2" y="2" width="86" height="108" fill="none" stroke="#0d0d0f" stroke-width="4"/></svg>`;
+  }
+
+  function render(lines = cart.get()) {
+    const isEmpty = lines.length === 0;
+    if (layout) layout.hidden = isEmpty;
+    if (empty) empty.hidden = !isEmpty;
+    if (!linesEl) return;
+
+    linesEl.innerHTML = lines
+      .map(
+        (l) => `
+      <div class="cartrow" data-id="${l.id}">
+        <div class="cartrow__art">${swatch(l.seed)}</div>
+        <div>
+          <p class="cartrow__name">${l.name}</p>
+          <p class="cartrow__meta">${l.size ? 'Size ' + l.size + ' · ' : ''}${formatMoney(l.price, '$')} each</p>
+          <div class="cartrow__controls">
+            <div class="cartrow__stepper">
+              <button type="button" data-dec aria-label="Decrease quantity">−</button>
+              <span>${l.qty}</span>
+              <button type="button" data-inc aria-label="Increase quantity">+</button>
+            </div>
+            <button type="button" class="cartrow__remove" data-remove>Remove</button>
+          </div>
+        </div>
+        <p class="cartrow__price">${formatMoney(l.price * l.qty, '$')}</p>
+      </div>`
+      )
+      .join('');
+
+    const sub = cartSubtotal(lines);
+    if (subEl) subEl.textContent = formatMoney(sub, '$');
+    if (totalEl) totalEl.textContent = formatMoney(sub, '$');
+  }
+
+  linesEl?.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const row = target.closest<HTMLElement>('.cartrow');
+    if (!row) return;
+    const id = row.dataset.id!;
+    const line = cart.get().find((l) => l.id === id);
+    if (!line) return;
+    if (target.closest('[data-inc]')) setQty(id, line.qty + 1);
+    else if (target.closest('[data-dec]')) setQty(id, line.qty - 1);
+    else if (target.closest('[data-remove]')) removeLine(id);
+  });
+
+  cart.subscribe((lines) => render(lines));
+</script>

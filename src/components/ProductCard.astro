@@ -1,0 +1,117 @@
+---
+import PlaceholderArt from './PlaceholderArt.astro';
+import { categoryLabels, type Product } from '../data/products';
+import { site } from '../data/site';
+
+interface Props {
+  product: Product;
+}
+const { product } = Astro.props;
+const badgeClass =
+  product.badge === 'NEW DROP'
+    ? ''
+    : product.badge === 'RESTOCK'
+      ? 'badge--cyan'
+      : 'badge--acid';
+---
+
+<article class="card panel reveal">
+  <a href={`/shop/${product.slug}`} class="card__media">
+    {product.soldOut && <span class="badge badge--sold">Sold Out</span>}
+    {!product.soldOut && product.badge && (
+      <span class:list={['badge', badgeClass]}>{product.badge}</span>
+    )}
+    <PlaceholderArt seed={product.seed} ratio="4 / 5" />
+  </a>
+
+  <div class="card__body">
+    <p class="hud card__cat">{categoryLabels[product.category]}</p>
+    <h3 class="card__name">
+      <a href={`/shop/${product.slug}`}>{product.name}</a>
+    </h3>
+    <p class="card__blurb">{product.blurb}</p>
+
+    <div class="card__foot">
+      <p class="card__price display">
+        {site.currencySymbol}{product.price}
+        {product.compareAt && <span class="card__compare">{site.currencySymbol}{product.compareAt}</span>}
+      </p>
+      {product.soldOut ? (
+        <button class="btn btn--ghost" disabled>Sold Out</button>
+      ) : (
+        <button
+          type="button"
+          class="btn card__add"
+          data-add-to-cart
+          data-slug={product.slug}
+          data-name={product.name}
+          data-price={product.price}
+          data-seed={product.seed}
+          data-has-sizes={product.sizes.length > 0 ? '1' : '0'}
+          data-href={`/shop/${product.slug}`}
+        >
+          {product.sizes.length > 0 ? 'Pick Size' : 'Add +'}
+        </button>
+      )}
+    </div>
+  </div>
+</article>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+  }
+  .card:hover {
+    transform: translate(-3px, -3px);
+    border-color: var(--accent);
+    box-shadow: 6px 6px 0 0 var(--accent);
+  }
+  .card__media {
+    position: relative;
+    display: block;
+    border-bottom: 2px solid var(--line-strong);
+  }
+  .card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: var(--sp-4);
+    flex: 1;
+  }
+  .card__cat {
+    color: var(--accent-2);
+  }
+  .card__name {
+    font-size: 1.15rem;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+  .card__name a:hover {
+    color: var(--accent);
+  }
+  .card__blurb {
+    color: var(--fog);
+    font-size: 0.9rem;
+    flex: 1;
+  }
+  .card__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    margin-top: var(--sp-2);
+  }
+  .card__price {
+    font-size: 1.5rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .card__compare {
+    color: var(--fog-dim);
+    font-size: 0.9rem;
+    text-decoration: line-through;
+    margin-left: 0.4rem;
+  }
+</style>

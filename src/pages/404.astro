@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ArcadeSprite from '../components/ArcadeSprite.astro';
+---
+
+<BaseLayout title="404 · Game Over">
+  <section class="nf">
+    <div class="container nf__inner">
+      <p class="hud nf__code blink">◆ ERROR 404 ◆</p>
+      <h1 class="display nf__title">Game Over</h1>
+      <p class="lede nf__msg">
+        This wall got buffed. The page you're looking for isn't here anymore —
+        or never existed on this block.
+      </p>
+      <div class="nf__sprite"><ArcadeSprite /></div>
+      <div class="nf__cta">
+        <a href="/" class="btn btn--lg">Continue → Home</a>
+        <a href="/shop" class="btn btn--ghost btn--lg">Enter the Shop</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf {
+    min-height: 70vh;
+    display: grid;
+    place-items: center;
+    padding-block: var(--sp-10);
+  }
+  .nf__inner {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: var(--sp-4);
+  }
+  .nf__code {
+    color: var(--magenta);
+  }
+  .nf__title {
+    font-size: var(--fs-mega);
+    line-height: 0.9;
+  }
+  .nf__msg {
+    max-width: 44ch;
+  }
+  .nf__sprite {
+    margin: var(--sp-2) 0;
+  }
+  .nf__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    justify-content: center;
+  }
+</style>

@@ -1,0 +1,372 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Marquee from '../components/Marquee.astro';
+import ArcadeSprite from '../components/ArcadeSprite.astro';
+import ProductCard from '../components/ProductCard.astro';
+import PlaceholderArt from '../components/PlaceholderArt.astro';
+import { products } from '../data/products';
+import { artworks } from '../data/artworks';
+import { site } from '../data/site';
+
+const featured = products.filter((p) => !p.soldOut).slice(0, 4);
+const galleryPeek = artworks.slice(0, 3);
+---
+
+<BaseLayout>
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container container--wide hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow">Insert Coin · {site.city}</p>
+        <h1 id="hero-title" class="display hero__title">
+          <span class="hero__line">Street</span>
+          <span class="hero__line spray-accent">Saint</span>
+          <span class="hero__line">of the <span class="text-cyan">904</span></span>
+        </h1>
+        <p class="lede hero__lede">
+          {site.tagline} Murals, limited streetwear drops, and pixel-fueled art
+          straight off the walls of Jacksonville.
+        </p>
+        <div class="hero__cta">
+          <a href="/shop" class="btn btn--lg">Shop the Drop →</a>
+          <a href="/gallery" class="btn btn--ghost btn--lg">See the Walls</a>
+        </div>
+        <p class="hud hero__hint blink">▲ ▲ ▼ ▼ ◀ ▶ ◀ ▶ · press start</p>
+      </div>
+
+      <div class="hero__stage">
+        <div class="hero__art panel panel--hard scanlines">
+          <PlaceholderArt seed={0} ratio="4 / 5" label="MURAL // RIVERSIDE" />
+        </div>
+        <div class="hero__sprite">
+          <ArcadeSprite />
+        </div>
+        <div class="hero__coin hud">1UP</div>
+        <div class="hero__hp panel" aria-hidden="true">
+          <span class="hud">HP</span>
+          <span class="hero__hpbar"><i></i></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Marquee
+    items={['New drop live', '★', 'Free local pickup', '★', 'Limited runs', '★', 'Real spray real city', '★']}
+  />
+
+  <!-- FEATURED DROPS -->
+  <section class="section" aria-labelledby="drops-title">
+    <div class="container container--wide">
+      <header class="sec-head">
+        <div>
+          <p class="eyebrow">Now Selling</p>
+          <h2 id="drops-title" class="display sec-head__title glitch" data-text="Latest Drops">
+            Latest Drops
+          </h2>
+        </div>
+        <a href="/shop" class="btn btn--ghost">All Products →</a>
+      </header>
+
+      <div class="grid product-grid">
+        {featured.map((p) => <ProductCard product={p} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY PEEK -->
+  <section class="section gallery-peek" aria-labelledby="walls-title">
+    <div class="container container--wide">
+      <header class="sec-head">
+        <div>
+          <p class="eyebrow">From the Streets</p>
+          <h2 id="walls-title" class="display sec-head__title">The Walls</h2>
+        </div>
+        <a href="/gallery" class="btn btn--ghost">Full Gallery →</a>
+      </header>
+
+      <div class="grid peek-grid">
+        {galleryPeek.map((art, i) => (
+          <a href="/gallery" class:list={['peek panel reveal', { 'peek--wide': i === 0 }]}>
+            <PlaceholderArt seed={art.seed} ratio={i === 0 ? '16 / 10' : '4 / 5'} />
+            <div class="peek__cap">
+              <p class="peek__title display">{art.title}</p>
+              <p class="hud peek__loc">{art.location} · {art.year}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT STRIP -->
+  <section class="section about-strip" aria-labelledby="about-title">
+    <div class="container container--wide about-strip__grid">
+      <div class="reveal">
+        <p class="eyebrow">Player One</p>
+        <h2 id="about-title" class="display about-strip__title">
+          One artist. <span class="text-accent">One city.</span> Zero filters.
+        </h2>
+        <p class="lede">
+          {site.tag} has been bombing legal walls, curating block parties, and
+          building a streetwear label out of the Bold City since day one. Every
+          piece here is drawn, sprayed, and printed in Duval County.
+        </p>
+        <a href="/about" class="btn">Read the Story</a>
+      </div>
+      <ul role="list" class="stat-row reveal">
+        <li class="stat panel"><span class="stat__num display">50+</span><span class="hud">Murals painted</span></li>
+        <li class="stat panel"><span class="stat__num display">904</span><span class="hud">Reppin' the code</span></li>
+        <li class="stat panel"><span class="stat__num display">100%</span><span class="hud">Made in Jax</span></li>
+        <li class="stat panel"><span class="stat__num display">∞</span><span class="hud">Cans emptied</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- COMMISSION CTA -->
+  <section class="section">
+    <div class="container container--wide">
+      <div class="cta-box panel panel--hard scanlines reveal">
+        <div>
+          <p class="eyebrow">Continue?</p>
+          <h2 class="display cta-box__title">Got a wall that needs a legend?</h2>
+          <p class="lede">Murals, live painting, brand collabs and custom pieces — let's build.</p>
+        </div>
+        <a href="/commissions" class="btn btn--acid btn--lg">Start a Commission →</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 2;
+    padding-block: clamp(2.5rem, 2rem + 5vw, 6rem);
+    overflow: hidden;
+  }
+  .hero__grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: var(--sp-8);
+    align-items: center;
+  }
+  .hero__title {
+    font-size: var(--fs-mega);
+    margin: var(--sp-4) 0;
+  }
+  .hero__line {
+    display: block;
+  }
+  .hero__lede {
+    max-width: 46ch;
+  }
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    margin-top: var(--sp-5);
+  }
+  .hero__hint {
+    margin-top: var(--sp-5);
+    color: var(--fog-dim);
+  }
+  .hero__stage {
+    position: relative;
+  }
+  .hero__art {
+    overflow: hidden;
+    transform: rotate(1.5deg);
+  }
+  .hero__sprite {
+    position: absolute;
+    bottom: -18px;
+    left: -26px;
+    z-index: 4;
+  }
+  .hero__coin {
+    position: absolute;
+    top: -14px;
+    right: 14px;
+    z-index: 4;
+    background: var(--acid);
+    color: var(--ink);
+    border: 2px solid var(--ink);
+    padding: 0.3em 0.6em;
+    transform: rotate(6deg);
+  }
+  .hero__hp {
+    position: absolute;
+    bottom: 14px;
+    right: -12px;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.7rem;
+  }
+  .hero__hp .hud {
+    color: var(--accent-2);
+  }
+  .hero__hpbar {
+    display: inline-block;
+    width: 90px;
+    height: 12px;
+    background: var(--concrete-3);
+    border: 2px solid var(--ink);
+  }
+  .hero__hpbar i {
+    display: block;
+    height: 100%;
+    width: 78%;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--lime) 0 6px,
+      #5fd646 6px 8px
+    );
+  }
+
+  /* Section heading */
+  .sec-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    margin-bottom: var(--sp-6);
+    flex-wrap: wrap;
+  }
+  .sec-head__title {
+    font-size: var(--fs-2xl);
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* Gallery peek */
+  .gallery-peek {
+    background: var(--concrete);
+    border-block: 2px solid var(--line-strong);
+  }
+  .peek-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .peek {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    transition: transform 0.16s ease, box-shadow 0.16s ease;
+  }
+  .peek--wide {
+    grid-column: 1 / -1;
+  }
+  .peek:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-hard-cyan);
+  }
+  .peek__cap {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: var(--sp-4);
+    background: linear-gradient(to top, rgba(13, 13, 15, 0.92), transparent);
+  }
+  .peek__title {
+    font-size: 1.6rem;
+  }
+  .peek__loc {
+    color: var(--accent-2);
+    margin-top: 0.2rem;
+  }
+
+  /* About strip */
+  .about-strip__grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: var(--sp-8);
+    align-items: center;
+  }
+  .about-strip__title {
+    font-size: var(--fs-2xl);
+    margin: var(--sp-3) 0 var(--sp-4);
+  }
+  .stat-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-4);
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: var(--sp-5);
+    text-align: center;
+  }
+  .stat__num {
+    font-size: 2.6rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat .hud {
+    color: var(--fog);
+  }
+  .stat:nth-child(2) .stat__num {
+    color: var(--accent-2);
+  }
+  .stat:nth-child(3) .stat__num {
+    color: var(--acid);
+  }
+  .stat:nth-child(4) .stat__num {
+    color: var(--lime);
+  }
+
+  /* CTA */
+  .cta-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-6);
+    padding: clamp(1.5rem, 1rem + 3vw, 3.5rem);
+    background: linear-gradient(120deg, var(--concrete), var(--concrete-2));
+    flex-wrap: wrap;
+  }
+  .cta-box__title {
+    font-size: var(--fs-xl);
+    margin: var(--sp-2) 0;
+    max-width: 20ch;
+  }
+
+  /* Responsive */
+  @media (max-width: 1000px) {
+    .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 860px) {
+    .hero__grid,
+    .about-strip__grid {
+      grid-template-columns: 1fr;
+    }
+    .hero__stage {
+      order: -1;
+      max-width: 420px;
+    }
+  }
+  @media (max-width: 620px) {
+    .peek-grid {
+      grid-template-columns: 1fr;
+    }
+    .peek--wide {
+      grid-column: auto;
+    }
+  }
+  @media (max-width: 460px) {
+    .product-grid {
+      grid-template-columns: 1fr;
+    }
+    .stat-row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

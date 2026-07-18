@@ -1,0 +1,134 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import Marquee from '../../components/Marquee.astro';
+import { products, categoryLabels, type ProductCategory } from '../../data/products';
+
+const categories = Object.keys(categoryLabels) as ProductCategory[];
+---
+
+<BaseLayout title="Shop" description="Limited streetwear drops, prints and objects from a Jacksonville street artist.">
+  <section class="shop-hero">
+    <div class="container container--wide">
+      <p class="eyebrow">Select Character</p>
+      <h1 class="display shop-hero__title">The Shop</h1>
+      <p class="lede">
+        Small-batch streetwear, signed prints and one-off objects. When it's
+        gone, it's gone — no restocks on limited runs.
+      </p>
+    </div>
+  </section>
+
+  <Marquee variant="cyan" items={['Limited runs', '◆', 'Ships nationwide', '◆', 'Local pickup in Duval', '◆']} />
+
+  <section class="section">
+    <div class="container container--wide">
+      <div class="filters" role="tablist" aria-label="Filter products by category">
+        <button type="button" class="chip is-active hud" data-filter="all" role="tab" aria-selected="true">
+          All
+        </button>
+        {categories.map((c) => (
+          <button type="button" class="chip hud" data-filter={c} role="tab" aria-selected="false">
+            {categoryLabels[c]}
+          </button>
+        ))}
+      </div>
+
+      <div class="grid shop-grid" data-shop-grid>
+        {products.map((p) => (
+          <div data-category={p.category} class="shop-cell">
+            <ProductCard product={p} />
+          </div>
+        ))}
+      </div>
+
+      <p class="shop-empty hud" data-shop-empty hidden>◆ Nothing in this category yet ◆</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .shop-hero {
+    padding-block: clamp(2rem, 1.5rem + 4vw, 4rem) var(--sp-6);
+  }
+  .shop-hero__title {
+    font-size: var(--fs-3xl);
+    margin: var(--sp-3) 0 var(--sp-4);
+  }
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    margin-bottom: var(--sp-6);
+  }
+  .chip {
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    color: var(--fog);
+    background: var(--concrete);
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-1);
+    transition: all 0.14s ease;
+  }
+  .chip:hover {
+    color: var(--chalk);
+    border-color: var(--accent-2);
+  }
+  .chip.is-active {
+    color: var(--on-accent);
+    background: var(--accent);
+    border-color: var(--ink);
+  }
+  .shop-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .shop-cell.is-hidden {
+    display: none;
+  }
+  .shop-empty {
+    text-align: center;
+    color: var(--fog-dim);
+    padding: var(--sp-8);
+  }
+  @media (max-width: 1000px) {
+    .shop-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 460px) {
+    .shop-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('.chip');
+  const cells = document.querySelectorAll<HTMLElement>('.shop-cell');
+  const emptyEl = document.querySelector<HTMLElement>('[data-shop-empty]');
+
+  function apply(filter: string) {
+    let visible = 0;
+    cells.forEach((cell) => {
+      const show = filter === 'all' || cell.dataset.category === filter;
+      cell.classList.toggle('is-hidden', !show);
+      if (show) visible++;
+    });
+    if (emptyEl) emptyEl.hidden = visible !== 0;
+    chips.forEach((c) => {
+      const on = c.dataset.filter === filter;
+      c.classList.toggle('is-active', on);
+      c.setAttribute('aria-selected', String(on));
+    });
+    const url = new URL(window.location.href);
+    if (filter === 'all') url.searchParams.delete('category');
+    else url.searchParams.set('category', filter);
+    history.replaceState({}, '', url);
+  }
+
+  chips.forEach((c) => c.addEventListener('click', () => apply(c.dataset.filter!)));
+
+  // Honor ?category= on load
+  const initial = new URL(window.location.href).searchParams.get('category');
+  if (initial) apply(initial);
+</script>

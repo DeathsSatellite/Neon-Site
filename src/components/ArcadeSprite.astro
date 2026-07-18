@@ -1,0 +1,91 @@
+---
+/**
+ * ArcadeSprite — a CSS/SVG pixel character with a motion-safe idle bob.
+ * Pure decoration; aria-hidden. This is the "video game" motif, kept
+ * featherweight (no JS, no canvas) so it loads instantly on any device.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+
+<div class={`sprite ${className}`} aria-hidden="true">
+  <svg viewBox="0 0 32 40" shape-rendering="crispEdges" role="presentation">
+    <!-- hood -->
+    <rect x="8" y="2" width="16" height="6" fill="#8a4bff" />
+    <rect x="6" y="6" width="20" height="6" fill="#8a4bff" />
+    <!-- face -->
+    <rect x="10" y="10" width="12" height="8" fill="#1e1e24" />
+    <rect x="12" y="12" width="3" height="3" fill="#00e5ff" class="sprite__eye" />
+    <rect x="18" y="12" width="3" height="3" fill="#00e5ff" class="sprite__eye" />
+    <!-- body -->
+    <rect x="8" y="18" width="16" height="12" fill="#ff2e63" />
+    <rect x="12" y="21" width="8" height="3" fill="#ffe600" />
+    <!-- arm holding can -->
+    <rect x="24" y="20" width="4" height="4" fill="#ff2e63" />
+    <rect x="28" y="16" width="4" height="8" fill="#c7c7d1" />
+    <rect x="29" y="13" width="2" height="3" fill="#ffe600" class="sprite__cap" />
+    <!-- legs -->
+    <rect x="10" y="30" width="4" height="8" fill="#26262e" />
+    <rect x="18" y="30" width="4" height="8" fill="#26262e" />
+    <!-- spray dots -->
+    <rect x="30" y="8" width="1.5" height="1.5" fill="#ffe600" class="sprite__spray" />
+    <rect x="27" y="6" width="1.5" height="1.5" fill="#00e5ff" class="sprite__spray" />
+  </svg>
+</div>
+
+<style>
+  .sprite {
+    width: clamp(90px, 14vw, 150px);
+    filter: drop-shadow(4px 6px 0 rgba(0, 0, 0, 0.6));
+  }
+  .sprite svg {
+    width: 100%;
+    height: auto;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .sprite {
+      animation: bob 2.4s ease-in-out infinite;
+    }
+    .sprite__eye {
+      animation: blink-eye 3.5s steps(1) infinite;
+    }
+    .sprite__spray {
+      animation: spray 1.6s ease-out infinite;
+    }
+    .sprite__cap {
+      transform-origin: center;
+      animation: shake 1.6s ease-in-out infinite;
+    }
+  }
+  @keyframes bob {
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+  @keyframes blink-eye {
+    92%,
+    96% {
+      opacity: 0;
+    }
+  }
+  @keyframes spray {
+    0% {
+      opacity: 0;
+      transform: translate(0, 0);
+    }
+    40% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translate(3px, -4px);
+    }
+  }
+  @keyframes shake {
+    50% {
+      transform: translateY(-1px);
+    }
+  }
+</style>

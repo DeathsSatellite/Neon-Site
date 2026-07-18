@@ -1,0 +1,111 @@
+---
+/**
+ * PlaceholderArt — deterministic graffiti-styled SVG stand-in for real photos.
+ * Swap for real imagery by replacing usages with Astro's <Image /> component.
+ * Purely decorative: hidden from the accessibility tree (aria-hidden).
+ */
+interface Props {
+  seed?: number;
+  label?: string;
+  ratio?: string; // e.g. "4 / 5", "16 / 9", "1 / 1"
+  class?: string;
+}
+const { seed = 0, label, ratio = '4 / 5', class: className = '' } = Astro.props;
+
+const palettes = [
+  { a: '#ff2e63', b: '#8a4bff', c: '#0d0d0f', glyph: '904' },
+  { a: '#00e5ff', b: '#8a4bff', c: '#0d0d0f', glyph: 'JAX' },
+  { a: '#ffe600', b: '#ff2e63', c: '#141018', glyph: '★' },
+  { a: '#7cff5b', b: '#00e5ff', c: '#0d0d0f', glyph: '✚' },
+  { a: '#8a4bff', b: '#ffe600', c: '#12101a', glyph: 'DVL' },
+];
+const p = palettes[((seed % palettes.length) + palettes.length) % palettes.length];
+
+// tiny deterministic PRNG so each seed is stable across builds
+function rng(s: number) {
+  let x = (s + 1) * 9301 + 49297;
+  return () => {
+    x = (x * 9301 + 49297) % 233280;
+    return x / 233280;
+  };
+}
+const r = rng(seed);
+const blobs = Array.from({ length: 3 }, () => ({
+  cx: 15 + r() * 70,
+  cy: 15 + r() * 70,
+  rad: 18 + r() * 26,
+  fill: r() > 0.5 ? p.a : p.b,
+}));
+const strokes = Array.from({ length: 4 }, () => ({
+  x1: r() * 100,
+  y1: r() * 100,
+  x2: r() * 100,
+  y2: r() * 100,
+  w: 1 + r() * 3,
+}));
+const uid = `pa-${seed}-${Math.floor(r() * 1e6)}`;
+---
+
+<div class={`ph ${className}`} style={`--ratio:${ratio};`} aria-hidden="true">
+  <svg viewBox="0 0 100 125" preserveAspectRatio="xMidYMid slice" role="presentation">
+    <defs>
+      <radialGradient id={`${uid}-bg`} cx="30%" cy="20%" r="90%">
+        <stop offset="0%" stop-color={p.b} stop-opacity="0.55" />
+        <stop offset="55%" stop-color={p.c} />
+        <stop offset="100%" stop-color="#08080a" />
+      </radialGradient>
+      <filter id={`${uid}-blur`}><feGaussianBlur stdDeviation="4" /></filter>
+      <pattern id={`${uid}-dots`} width="4" height="4" patternUnits="userSpaceOnUse">
+        <circle cx="1" cy="1" r="0.7" fill={p.a} opacity="0.5" />
+      </pattern>
+    </defs>
+
+    <rect width="100" height="125" fill={`url(#${uid}-bg)`} />
+
+    {blobs.map((b) => (
+      <circle cx={b.cx} cy={b.cy} r={b.rad} fill={b.fill} opacity="0.4" filter={`url(#${uid}-blur)`} />
+    ))}
+
+    <rect width="100" height="125" fill={`url(#${uid}-dots)`} opacity="0.35" />
+
+    {strokes.map((s) => (
+      <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke={p.a} stroke-width={s.w} stroke-linecap="round" opacity="0.5" />
+    ))}
+
+    <text
+      x="50"
+      y="70"
+      text-anchor="middle"
+      font-family="Anton, sans-serif"
+      font-size="46"
+      fill="#ffffff"
+      opacity="0.12"
+      style="letter-spacing:-1px"
+    >{p.glyph}</text>
+
+    <rect x="2" y="2" width="96" height="121" fill="none" stroke="#0d0d0f" stroke-width="3" />
+  </svg>
+  {label && <span class="ph__label hud">{label}</span>}
+</div>
+
+<style>
+  .ph {
+    position: relative;
+    aspect-ratio: var(--ratio);
+    overflow: hidden;
+    background: var(--concrete);
+  }
+  .ph svg {
+    width: 100%;
+    height: 100%;
+  }
+  .ph__label {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    color: rgba(255, 255, 255, 0.55);
+    background: rgba(13, 13, 15, 0.6);
+    padding: 0.2em 0.45em;
+    font-size: 0.55rem;
+  }
+</style>

@@ -1,0 +1,451 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+---
+
+<BaseLayout title="Checkout" description="Secure checkout.">
+  <div class="container container--wide co">
+    <div class="co__head">
+      <h1 class="display co__title">Checkout</h1>
+      <a href="/cart" class="hud co__back">← Back to cart</a>
+    </div>
+
+    <!-- Integration banner: this is a UI + validation shell. Payment capture is
+         intentionally NOT implemented here — wire the "Place Order" step to a
+         real processor (Stripe Checkout / Shopify) before going live. -->
+    <div class="co-note panel" role="note">
+      <p class="hud co-note__tag">◆ Demo checkout</p>
+      <p>
+        This is an integration-ready checkout. Contact &amp; shipping validation
+        works client-side; the payment step is a labeled hand-off point for
+        Stripe Checkout or Shopify — no card data is collected here. See
+        <code>PLACE-ORDER</code> in the page source.
+      </p>
+    </div>
+
+    <div class="co-layout" data-co-layout>
+      <!-- Forms -->
+      <form class="co-form" data-co-form novalidate>
+        <section class="co-section panel">
+          <h2 class="hud co-section__h">1 · Contact</h2>
+          <div class="field">
+            <label for="email" class="hud">Email <span class="req">*</span></label>
+            <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required />
+            <p class="err" data-err-for="email" role="alert" hidden></p>
+          </div>
+        </section>
+
+        <section class="co-section panel">
+          <h2 class="hud co-section__h">2 · Shipping</h2>
+          <div class="field-row">
+            <div class="field">
+              <label for="fname" class="hud">First name <span class="req">*</span></label>
+              <input id="fname" name="fname" type="text" autocomplete="given-name" required />
+              <p class="err" data-err-for="fname" role="alert" hidden></p>
+            </div>
+            <div class="field">
+              <label for="lname" class="hud">Last name <span class="req">*</span></label>
+              <input id="lname" name="lname" type="text" autocomplete="family-name" required />
+              <p class="err" data-err-for="lname" role="alert" hidden></p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="address" class="hud">Address <span class="req">*</span></label>
+            <input id="address" name="address" type="text" autocomplete="address-line1" required />
+            <p class="err" data-err-for="address" role="alert" hidden></p>
+          </div>
+          <div class="field-row co-city">
+            <div class="field">
+              <label for="city" class="hud">City <span class="req">*</span></label>
+              <input id="city" name="city" type="text" autocomplete="address-level2" required value="Jacksonville" />
+              <p class="err" data-err-for="city" role="alert" hidden></p>
+            </div>
+            <div class="field">
+              <label for="state" class="hud">State <span class="req">*</span></label>
+              <input id="state" name="state" type="text" autocomplete="address-level1" required value="FL" />
+              <p class="err" data-err-for="state" role="alert" hidden></p>
+            </div>
+            <div class="field">
+              <label for="zip" class="hud">ZIP <span class="req">*</span></label>
+              <input id="zip" name="zip" type="text" autocomplete="postal-code" inputmode="numeric" required />
+              <p class="err" data-err-for="zip" role="alert" hidden></p>
+            </div>
+          </div>
+          <label class="co-check">
+            <input type="checkbox" name="pickup" />
+            <span>I'll pick up locally in {site.areaCode} (skip shipping)</span>
+          </label>
+        </section>
+
+        <section class="co-section panel">
+          <h2 class="hud co-section__h">3 · Payment</h2>
+          <!-- PLACE-ORDER: replace this block with a real payment integration.
+               Recommended: redirect to Stripe Checkout, or mount Stripe Elements /
+               the Shopify Buy SDK here. Do NOT collect raw card numbers yourself. -->
+          <div class="co-pay">
+            <p class="co-pay__lock hud">🔒 Secure payment</p>
+            <p class="co-pay__msg">
+              Payment is handled by a PCI-compliant processor. Connect Stripe or
+              Shopify to enable live card, Apple Pay and Google Pay checkout.
+            </p>
+          </div>
+          <button type="submit" class="btn btn--lg co-place" data-co-place>
+            Place Order · <span data-co-total>$0.00</span>
+          </button>
+          <p class="co-terms hud">By ordering you agree to the drop terms. All sales on limited items are final.</p>
+        </section>
+      </form>
+
+      <!-- Order summary -->
+      <aside class="co-summary panel panel--hard">
+        <h2 class="hud co-summary__h">Order</h2>
+        <div class="co-summary__lines" data-co-lines></div>
+        <div class="co-summary__row"><span>Subtotal</span><span class="display" data-co-sub>$0.00</span></div>
+        <div class="co-summary__row co-summary__row--muted"><span>Shipping</span><span data-co-ship>—</span></div>
+        <div class="co-summary__row co-summary__total"><span class="hud">Total</span><span class="display" data-co-grand>$0.00</span></div>
+      </aside>
+    </div>
+
+    <!-- Empty state -->
+    <div class="co-empty" data-co-empty hidden>
+      <p class="hud blink">◆ Nothing to check out ◆</p>
+      <h2 class="display">Your cart is empty.</h2>
+      <a href="/shop" class="btn btn--cyan btn--lg">Back to the Shop →</a>
+    </div>
+
+    <!-- Confirmation -->
+    <div class="co-done" data-co-done hidden role="status" aria-live="polite">
+      <p class="co-done__badge hud">◆ Order Placed ◆</p>
+      <h2 class="display">High score.</h2>
+      <p class="lede">
+        This is a demo confirmation — no payment was taken. Once Stripe/Shopify is
+        connected, real orders land in the artist's dashboard and inbox.
+      </p>
+      <a href="/shop" class="btn btn--acid btn--lg">Continue →</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .co {
+    padding-block: clamp(2rem, 1.5rem + 4vw, 4rem);
+    min-height: 60vh;
+  }
+  .co__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    margin-bottom: var(--sp-4);
+    flex-wrap: wrap;
+  }
+  .co__title {
+    font-size: var(--fs-3xl);
+  }
+  .co__back {
+    color: var(--fog-dim);
+  }
+  .co__back:hover {
+    color: var(--accent-2);
+  }
+  .co-note {
+    display: grid;
+    gap: 0.4rem;
+    padding: var(--sp-4);
+    margin-bottom: var(--sp-6);
+    border-color: var(--accent-2);
+  }
+  .co-note__tag {
+    color: var(--accent-2);
+  }
+  .co-note p:last-child {
+    color: var(--fog);
+    font-size: 0.9rem;
+  }
+  .co-note code {
+    font-family: var(--font-arcade);
+    font-size: 0.72rem;
+    color: var(--acid);
+  }
+  .co-layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: var(--sp-6);
+    align-items: start;
+  }
+  .co-form {
+    display: grid;
+    gap: var(--sp-5);
+  }
+  .co-section {
+    display: grid;
+    gap: var(--sp-4);
+    padding: var(--sp-5);
+  }
+  .co-section__h {
+    color: var(--accent);
+  }
+  .field {
+    display: grid;
+    gap: 0.4rem;
+  }
+  .field label {
+    color: var(--accent-2);
+  }
+  label .req {
+    color: var(--magenta);
+  }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-4);
+  }
+  .co-city {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+  input {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.7rem 0.85rem;
+    color: var(--chalk);
+    background: var(--ink);
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-1);
+    font: inherit;
+  }
+  input:focus {
+    outline: none;
+    border-color: var(--accent-2);
+  }
+  .field.has-error input {
+    border-color: var(--magenta);
+  }
+  .err {
+    color: var(--magenta);
+    font-size: 0.82rem;
+  }
+  .co-check {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--fog);
+    cursor: pointer;
+  }
+  .co-check input {
+    width: 20px;
+    height: 20px;
+    min-height: auto;
+    accent-color: var(--accent);
+  }
+  .co-pay {
+    display: grid;
+    gap: 0.4rem;
+    padding: var(--sp-4);
+    background: var(--ink);
+    border: 2px dashed var(--line-strong);
+    border-radius: var(--r-1);
+  }
+  .co-pay__lock {
+    color: var(--lime);
+  }
+  .co-pay__msg {
+    color: var(--fog);
+    font-size: 0.88rem;
+  }
+  .co-place {
+    width: 100%;
+  }
+  .co-terms {
+    color: var(--fog-dim);
+    text-align: center;
+    font-size: 0.6rem;
+  }
+  .co-summary {
+    display: grid;
+    gap: var(--sp-3);
+    padding: var(--sp-5);
+    position: sticky;
+    top: calc(var(--header-h) + 1rem);
+  }
+  .co-summary__h {
+    color: var(--accent-2);
+  }
+  .co-summary__lines {
+    display: grid;
+    gap: var(--sp-3);
+    padding-bottom: var(--sp-3);
+    border-bottom: 2px solid var(--line);
+  }
+  :global(.co-line) {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+  }
+  :global(.co-line__name) {
+    color: var(--chalk);
+  }
+  :global(.co-line__meta) {
+    color: var(--fog-dim);
+    font-size: 0.78rem;
+  }
+  :global(.co-line__price) {
+    font-variant-numeric: tabular-nums;
+    color: var(--fog);
+  }
+  .co-summary__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    color: var(--fog);
+  }
+  .co-summary__row--muted {
+    color: var(--fog-dim);
+    font-size: 0.85rem;
+  }
+  .co-summary__total {
+    padding-top: var(--sp-3);
+    border-top: 2px solid var(--line-strong);
+    color: var(--chalk);
+  }
+  .co-summary__total .display {
+    font-size: 1.7rem;
+    color: var(--accent-3);
+  }
+  .co-empty,
+  .co-done {
+    display: grid;
+    gap: var(--sp-4);
+    place-items: center;
+    text-align: center;
+    padding: var(--sp-12) var(--sp-4);
+  }
+  .co-empty h2,
+  .co-done h2 {
+    font-size: var(--fs-2xl);
+  }
+  .co-done__badge {
+    color: var(--acid);
+  }
+  @media (max-width: 820px) {
+    .co-layout {
+      grid-template-columns: 1fr;
+    }
+    .co-summary {
+      position: static;
+      order: -1;
+    }
+  }
+  @media (max-width: 520px) {
+    .co-city {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  import { cart, cartSubtotal, formatMoney } from '../scripts/cart';
+
+  const layout = document.querySelector<HTMLElement>('[data-co-layout]');
+  const emptyEl = document.querySelector<HTMLElement>('[data-co-empty]');
+  const doneEl = document.querySelector<HTMLElement>('[data-co-done]');
+  const linesEl = document.querySelector<HTMLElement>('[data-co-lines]');
+  const subEl = document.querySelector<HTMLElement>('[data-co-sub]');
+  const shipEl = document.querySelector<HTMLElement>('[data-co-ship]');
+  const grandEl = document.querySelector<HTMLElement>('[data-co-grand]');
+  const totalBtnEl = document.querySelector<HTMLElement>('[data-co-total]');
+  const form = document.querySelector<HTMLFormElement>('[data-co-form]');
+  const pickup = form?.querySelector<HTMLInputElement>('[name="pickup"]');
+  const SHIP_FLAT = 8;
+
+  function render(lines = cart.get()) {
+    const isEmpty = lines.length === 0;
+    // Don't flip back to the form once the order is confirmed.
+    if (doneEl && !doneEl.hidden) return;
+    if (layout) layout.hidden = isEmpty;
+    if (emptyEl) emptyEl.hidden = !isEmpty;
+    if (isEmpty || !linesEl) return;
+
+    linesEl.innerHTML = lines
+      .map(
+        (l) => `
+      <div class="co-line">
+        <div>
+          <div class="co-line__name">${l.name} <span class="co-line__meta">×${l.qty}${l.size ? ' · ' + l.size : ''}</span></div>
+        </div>
+        <div class="co-line__price">${formatMoney(l.price * l.qty, '$')}</div>
+      </div>`
+      )
+      .join('');
+
+    const sub = cartSubtotal(lines);
+    const ship = pickup?.checked || sub === 0 ? 0 : SHIP_FLAT;
+    const grand = sub + ship;
+    if (subEl) subEl.textContent = formatMoney(sub, '$');
+    if (shipEl) shipEl.textContent = pickup?.checked ? 'Local pickup — free' : formatMoney(ship, '$');
+    if (grandEl) grandEl.textContent = formatMoney(grand, '$');
+    if (totalBtnEl) totalBtnEl.textContent = formatMoney(grand, '$');
+  }
+
+  pickup?.addEventListener('change', () => render());
+  cart.subscribe((lines) => render(lines));
+
+  // --- Validation ---------------------------------------------------------
+  function showError(name: string, msg: string) {
+    const field = form?.querySelector(`[name="${name}"]`)?.closest('.field');
+    const err = form?.querySelector<HTMLElement>(`[data-err-for="${name}"]`);
+    field?.classList.add('has-error');
+    if (err) {
+      err.textContent = msg;
+      err.hidden = false;
+    }
+  }
+  function clearError(name: string) {
+    const field = form?.querySelector(`[name="${name}"]`)?.closest('.field');
+    const err = form?.querySelector<HTMLElement>(`[data-err-for="${name}"]`);
+    field?.classList.remove('has-error');
+    if (err) err.hidden = true;
+  }
+  form?.querySelectorAll<HTMLElement>('input[name]').forEach((el) =>
+    el.addEventListener('input', () => clearError(el.getAttribute('name')!))
+  );
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = new FormData(form);
+    const isPickup = pickup?.checked;
+    const required: Array<[string, string]> = [['email', 'Enter a valid email.']];
+    if (!isPickup) {
+      required.push(
+        ['fname', 'Required.'],
+        ['lname', 'Required.'],
+        ['address', 'Required.'],
+        ['city', 'Required.'],
+        ['state', 'Required.'],
+        ['zip', 'Required.']
+      );
+    }
+
+    let firstBad: string | null = null;
+    for (const [name, msg] of required) {
+      const val = String(data.get(name) ?? '').trim();
+      const bad = !val || (name === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val));
+      if (bad) {
+        showError(name, msg);
+        firstBad = firstBad ?? name;
+      } else clearError(name);
+    }
+    if (firstBad) {
+      form.querySelector<HTMLElement>(`[name="${firstBad}"]`)?.focus();
+      return;
+    }
+
+    // PLACE-ORDER hand-off point. In production, submit to Stripe/Shopify here
+    // instead of showing the demo confirmation.
+    if (layout) layout.hidden = true;
+    if (doneEl) {
+      doneEl.hidden = false;
+      doneEl.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+  });
+</script>

@@ -1,0 +1,216 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PlaceholderArt from '../components/PlaceholderArt.astro';
+import ArcadeSprite from '../components/ArcadeSprite.astro';
+import Marquee from '../components/Marquee.astro';
+import { site } from '../data/site';
+
+const timeline = [
+  { year: '2016', title: 'First Legal Wall', body: 'A rattle-can halo in Murray Hill kicks it all off.' },
+  { year: '2019', title: 'The 904 Collective', body: 'Curating block parties and group walls across Duval.' },
+  { year: '2022', title: 'First Streetwear Drop', body: 'Box-logo tees sell out in a weekend at a Riverside pop-up.' },
+  { year: '2024', title: 'Concrete Jungle', body: 'A 40-foot commissioned mural anchors the Riverside arts district.' },
+];
+---
+
+<BaseLayout title="About" description={`The story of ${site.tag}, street artist out of Jacksonville, FL.`}>
+  <section class="about-hero">
+    <div class="container container--wide about-hero__grid">
+      <div class="reveal">
+        <p class="eyebrow">Player One · Bio</p>
+        <h1 class="display about-hero__title">
+          {site.tag}
+        </h1>
+        <p class="lede">
+          Street artist, muralist and streetwear designer born and based in
+          {site.city}. What started as tags on a skateboard turned into a
+          full-blown label and a wall-painting practice repping the {site.areaCode}
+          everywhere it goes.
+        </p>
+        <div class="about-hero__socials">
+          {site.socials.map((s) => (
+            <a href={s.href} class="hud about-social">{s.label} <span>{s.handle}</span></a>
+          ))}
+        </div>
+      </div>
+      <div class="about-hero__portrait">
+        <div class="panel panel--hard scanlines">
+          <PlaceholderArt seed={0} ratio="4 / 5" label="PORTRAIT // SWAP PHOTO" />
+        </div>
+        <div class="about-hero__sprite"><ArcadeSprite /></div>
+      </div>
+    </div>
+  </section>
+
+  <Marquee variant="cyan" items={['Est. Jacksonville', '◆', 'Repping the 904', '◆', 'Aerosol & pixels', '◆']} />
+
+  <section class="section">
+    <div class="container container--wide about-story">
+      <div class="reveal">
+        <h2 class="display about-h2">The Origin Story</h2>
+        <p>
+          Every artist has a Level 1. Ours starts with a busted skateboard, a
+          fistful of paint markers, and a stretch of concrete that needed color.
+          Fast-forward through a decade of legal walls, gallery shows, and
+          sold-out drops, and the mission hasn't changed: put Jacksonville on the
+          map, one wall and one garment at a time.
+        </p>
+        <p>
+          The work fuses graffiti fundamentals with the arcade and video-game
+          imagery of a '90s childhood — pixel fire, coin-slot halos, leaderboard
+          sunsets. It's nostalgic, it's loud, and it's unmistakably Duval.
+        </p>
+        <p class="about-quote spray">
+          "Paint the city you want to live in."
+        </p>
+      </div>
+
+      <ol class="timeline reveal" role="list">
+        {timeline.map((t) => (
+          <li class="tl-item">
+            <span class="tl-year display">{t.year}</span>
+            <div class="tl-body panel">
+              <h3 class="tl-title">{t.title}</h3>
+              <p>{t.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container container--wide">
+      <div class="about-cta panel panel--hard reveal">
+        <div>
+          <p class="eyebrow">Continue?</p>
+          <h2 class="display about-cta__title">Let's put something on your wall.</h2>
+        </div>
+        <div class="about-cta__actions">
+          <a href="/commissions" class="btn btn--lg">Commission →</a>
+          <a href="/shop" class="btn btn--ghost btn--lg">Shop the Drop</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-hero {
+    padding-block: clamp(2rem, 1.5rem + 4vw, 4rem) var(--sp-8);
+  }
+  .about-hero__grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: var(--sp-8);
+    align-items: center;
+  }
+  .about-hero__title {
+    font-size: var(--fs-3xl);
+    margin: var(--sp-3) 0 var(--sp-4);
+    color: var(--accent);
+  }
+  .about-hero__socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-4);
+    margin-top: var(--sp-5);
+  }
+  .about-social {
+    color: var(--fog);
+  }
+  .about-social span {
+    color: var(--fog-dim);
+    display: block;
+  }
+  .about-hero__portrait {
+    position: relative;
+  }
+  .about-hero__portrait .panel {
+    overflow: hidden;
+    transform: rotate(-1.5deg);
+  }
+  .about-hero__sprite {
+    position: absolute;
+    right: -20px;
+    bottom: -20px;
+  }
+  .about-story {
+    display: grid;
+    grid-template-columns: 1fr 0.9fr;
+    gap: var(--sp-8);
+    align-items: start;
+  }
+  .about-h2 {
+    font-size: var(--fs-2xl);
+    margin-bottom: var(--sp-4);
+  }
+  .about-story p {
+    color: var(--fog);
+    margin-bottom: var(--sp-4);
+    max-width: 60ch;
+  }
+  .about-quote {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 1rem + 3vw, 2.6rem);
+    line-height: 1.05;
+    margin-top: var(--sp-5);
+    text-transform: uppercase;
+  }
+  .timeline {
+    display: grid;
+    gap: var(--sp-4);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .tl-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--sp-4);
+    align-items: center;
+  }
+  .tl-year {
+    font-size: 1.8rem;
+    color: var(--accent-2);
+    min-width: 3.5ch;
+  }
+  .tl-body {
+    padding: var(--sp-4);
+  }
+  .tl-title {
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+  .tl-body p {
+    color: var(--fog);
+    font-size: 0.92rem;
+  }
+  .about-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-5);
+    padding: clamp(1.5rem, 1rem + 3vw, 3rem);
+    background: linear-gradient(120deg, var(--concrete), var(--concrete-2));
+    flex-wrap: wrap;
+  }
+  .about-cta__title {
+    font-size: var(--fs-xl);
+    margin-top: var(--sp-2);
+  }
+  .about-cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+  }
+  @media (max-width: 860px) {
+    .about-hero__grid,
+    .about-story {
+      grid-template-columns: 1fr;
+    }
+    .about-hero__portrait {
+      max-width: 380px;
+    }
+  }
+</style>

@@ -1,0 +1,162 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PlaceholderArt from '../components/PlaceholderArt.astro';
+import Marquee from '../components/Marquee.astro';
+import { artworks } from '../data/artworks';
+---
+
+<BaseLayout title="Gallery" description="Murals and street art across Jacksonville — Riverside, Springfield, Downtown and beyond.">
+  <section class="gal-hero">
+    <div class="container container--wide">
+      <p class="eyebrow">The Walls · Level Select</p>
+      <h1 class="display gal-hero__title">Gallery</h1>
+      <p class="lede">
+        Legal walls, commissioned murals and freight-yard pieces from across the
+        Bold City. Tap into any location — every wall has a story.
+      </p>
+    </div>
+  </section>
+
+  <Marquee items={['Riverside', '★', 'Springfield', '★', 'Downtown', '★', 'San Marco', '★', 'Five Points', '★', 'Murray Hill', '★']} />
+
+  <section class="section">
+    <div class="container container--wide">
+      <div class="gal-grid">
+        {artworks.map((art, i) => (
+          <figure
+            class:list={[
+              'gal-item panel reveal scanlines',
+              { 'gal-item--wide': art.span === 'wide', 'gal-item--tall': art.span === 'tall' },
+            ]}
+            data-delay={(i % 4) * 60}
+          >
+            <PlaceholderArt seed={art.seed} ratio={art.span === 'wide' ? '16 / 9' : art.span === 'tall' ? '3 / 4' : '1 / 1'} />
+            <figcaption class="gal-cap">
+              <div class="gal-cap__top">
+                <h2 class="display gal-cap__title">{art.title}</h2>
+                <span class="tape gal-cap__year">{art.year}</span>
+              </div>
+              <p class="hud gal-cap__loc">◈ {art.location}</p>
+              <p class="gal-cap__blurb">{art.blurb}</p>
+              <p class="gal-cap__medium">{art.medium}</p>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container container--wide">
+      <div class="gal-cta panel panel--hard reveal">
+        <div>
+          <p class="eyebrow">Bonus Stage</p>
+          <h2 class="display gal-cta__title">Want a piece like this on your wall?</h2>
+        </div>
+        <a href="/commissions" class="btn btn--acid btn--lg">Commission a Mural →</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .gal-hero {
+    padding-block: clamp(2rem, 1.5rem + 4vw, 4rem) var(--sp-6);
+  }
+  .gal-hero__title {
+    font-size: var(--fs-3xl);
+    margin: var(--sp-3) 0 var(--sp-4);
+  }
+  .gal-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-flow: dense;
+    gap: var(--sp-5);
+  }
+  .gal-item {
+    position: relative;
+    overflow: hidden;
+    grid-column: span 2;
+  }
+  .gal-item--wide {
+    grid-column: span 4;
+  }
+  .gal-item--tall {
+    grid-row: span 2;
+  }
+  .gal-cap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.4rem;
+    padding: var(--sp-5);
+    background: linear-gradient(to top, rgba(13, 13, 15, 0.95) 10%, rgba(13, 13, 15, 0.15) 60%, transparent);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .gal-item:hover .gal-cap,
+  .gal-item:focus-within .gal-cap {
+    opacity: 1;
+    transform: none;
+  }
+  /* Always show captions on touch / small screens (no hover) */
+  @media (hover: none), (max-width: 720px) {
+    .gal-cap {
+      opacity: 1;
+      transform: none;
+      position: relative;
+      inset: auto;
+      background: var(--concrete);
+      border-top: 2px solid var(--line-strong);
+    }
+  }
+  .gal-cap__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--sp-3);
+  }
+  .gal-cap__title {
+    font-size: 1.7rem;
+  }
+  .gal-cap__loc {
+    color: var(--accent-2);
+  }
+  .gal-cap__blurb {
+    color: var(--fog);
+    font-size: 0.92rem;
+  }
+  .gal-cap__medium {
+    color: var(--fog-dim);
+    font-size: 0.82rem;
+    font-style: italic;
+  }
+  .gal-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-5);
+    padding: clamp(1.5rem, 1rem + 3vw, 3rem);
+    background: linear-gradient(120deg, var(--concrete), var(--concrete-2));
+    flex-wrap: wrap;
+  }
+  .gal-cta__title {
+    font-size: var(--fs-xl);
+    margin-top: var(--sp-2);
+    max-width: 22ch;
+  }
+  @media (max-width: 720px) {
+    .gal-grid {
+      grid-template-columns: 1fr;
+    }
+    .gal-item,
+    .gal-item--wide,
+    .gal-item--tall {
+      grid-column: auto;
+      grid-row: auto;
+    }
+  }
+</style>

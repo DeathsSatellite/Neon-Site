@@ -1,0 +1,19 @@
+---
+interface Props {
+  items: string[];
+  variant?: 'accent' | 'cyan';
+  reverse?: boolean;
+}
+const { items, variant = 'accent', reverse = false } = Astro.props;
+// Duplicate for a seamless loop
+const loop = [...items, ...items];
+---
+
+<div
+  class:list={['marquee', { 'marquee--cyan': variant === 'cyan', 'marquee--reverse': reverse }]}
+  aria-hidden="true"
+>
+  <div class="marquee__track">
+    {loop.map((item) => <span>{item}</span>)}
+  </div>
+</div>
